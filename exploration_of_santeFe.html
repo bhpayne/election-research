@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>exploration_of_alameda</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>exploration_of_santeFe</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11771,44 +11771,19 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>data source: <a href="https://www.rankedchoicevoting.org/data_clearinghouse">https://www.rankedchoicevoting.org/data_clearinghouse</a></p>
-<p>RCV definition: <a href="https://ballotpedia.org/Ranked-choice_voting_(RCV">https://ballotpedia.org/Ranked-choice_voting_(RCV</a>)</p>
-<p>Additional analysis:</p>
-<ul>
-<li><a href="http://archive3.fairvote.org/press/san-leandro-facts/">http://archive3.fairvote.org/press/san-leandro-facts/</a></li>
-<li><a href="https://laurendo.wordpress.com/2010/11/24/running-the-numbers/">https://laurendo.wordpress.com/2010/11/24/running-the-numbers/</a></li>
-<li><a href="http://www.acgov.org/rov/rcv/results/index.htm">http://www.acgov.org/rov/rcv/results/index.htm</a></li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Objective for this notebook: separate the elections into the following categories:</p>
-<ol>
-<li>Leading candidate in the first round has greater than 50% first choice votes</li>
-<li>Leading candidate in the first round has between 45-50% first choice votes</li>
-<li>Leading candidate in the first round has less than 45% of first choice votes </li>
-</ol>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pandas&#39;</span><span class="p">,</span><span class="n">pandas</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11826,6 +11801,7 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>pandas 0.23.4
+numpy 1.13.3
 </pre>
 </div>
 </div>
@@ -11834,24 +11810,92 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The Google drive contains folders and subfolders, with .txt files being the desired content</p>
-<h1 id="First-attempt-to-get-data:-download-individual-txt-file-from-Google-drive">First attempt to get data: download individual txt file from Google drive<a class="anchor-link" href="#First-attempt-to-get-data:-download-individual-txt-file-from-Google-drive">&#182;</a></h1><p>This approach works, but does not scale well. The manual labor of getting the relevant links would be tedious. Also the filename is not preserved</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># https://stackoverflow.com/questions/38511444/python-download-files-from-google-drive-using-url</span>
-<span class="c1"># https://github.com/ndrplz/google-drive-downloader</span>
-<span class="o">!</span>pip install googledrivedownloader
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;voting_data/Santa_Fe/Santa Fe/2018/JsonFiles/CvrExport.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_file</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">read_file</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;Version&#39;, &#39;ElectionId&#39;, &#39;Sessions&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -11868,102 +11912,9 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Requirement already satisfied: googledrivedownloader in /opt/conda/lib/python3.6/site-packages (0.4)
+<pre>5.4.17.5
 </pre>
 </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">google_drive_downloader</span> <span class="k">import</span> <span class="n">GoogleDriveDownloader</span> <span class="k">as</span> <span class="n">gdd</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gdd</span><span class="o">.</span><span class="n">download_file_from_google_drive</span><span class="p">(</span><span class="n">file_id</span><span class="o">=</span><span class="s1">&#39;16lMt83ZaI_iLnyr1_R2fx43BimLwi01B&#39;</span><span class="p">,</span>
-                                    <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;./file.txt&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Rather than download one file, I got a zip</p>
-<h1 id="data-gathering-attempt-2:-download-all-folders-from-drive-manually">data gathering attempt 2: download all folders from drive manually<a class="anchor-link" href="#data-gathering-attempt-2:-download-all-folders-from-drive-manually">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>all the data: 
-<a href="https://drive.google.com/drive/folders/1DJzIrTaDW3GSGJTkPTGAlpAMbozFG_pm">https://drive.google.com/drive/folders/1DJzIrTaDW3GSGJTkPTGAlpAMbozFG_pm</a></p>
-<p>Then download all content as a zip. Size is 1.5 GB. Of this, Sante Fe is 1.4GB</p>
-<p>I started with just "Alameda County, CA (Berkeley, Oakland, San Leandro)" which is 18MB as a .zip</p>
-<p><a href="https://drive.google.com/drive/folders/1u_airJzoLC2PMYMHcF2KYJEKxxKBi5H7">https://drive.google.com/drive/folders/1u_airJzoLC2PMYMHcF2KYJEKxxKBi5H7</a></p>
-
-</div>
-</div>
-</div>!mkdir voting_data
-!mkdir voting_data/Alameda
-!unzip voting_data/Alameda/drive-download-20190724T221439Z-001.zip
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="import-a-file">import a file<a class="anchor-link" href="#import-a-file">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/*&#39;</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[5]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>34</pre>
-</div>
-
 </div>
 
 </div>
@@ -11975,7 +11926,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElectionId&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -11988,42 +11939,25 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 4 - Oakland_Nov 2010.txt&#39;</pre>
-</div>
-
-</div>
-
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Santa Fe 2018 Municipal
+</pre>
 </div>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Normally this is where I would want to create a tuple of <code>ballot_image_</code> and <code>master_lookup_</code> in order to decode the data.</p>
-<p>Since I don't care about the name of who actually won each election, I can stick with numeric data for now</p>
 
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># I could analyze the fixed-width file as plain text</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
-    <span class="c1">#file_contents = fil.read()  # do not split on newline -- one long string</span>
-    <span class="n">file_contents</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>  <span class="c1"># creates a list of entries</span>
-    
-<span class="nb">len</span><span class="p">(</span><span class="n">file_contents</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12042,7 +11976,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>71652</pre>
+<pre>list</pre>
 </div>
 
 </div>
@@ -12050,29 +11984,13 @@ div#notebook {
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Rather than manually split each row in the plain text file, I'll use Pandas</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                     <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;pref_voter_id&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;serial_number&#39;</span><span class="p">,</span><span class="s1">&#39;tally_type_id&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;precinct_id&#39;</span><span class="p">,</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;candidate_id&#39;</span><span class="p">,</span><span class="s1">&#39;over_vote&#39;</span><span class="p">,</span><span class="s1">&#39;under_vote&#39;</span><span class="p">]</span>
-<span class="n">df</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12091,7 +12009,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(71652, 9)</pre>
+<pre>20670</pre>
 </div>
 
 </div>
@@ -12105,7 +12023,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12122,100 +12040,9 @@ div#notebook {
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>contest_id</th>
-      <th>pref_voter_id</th>
-      <th>serial_number</th>
-      <th>tally_type_id</th>
-      <th>precinct_id</th>
-      <th>vote_rank</th>
-      <th>candidate_id</th>
-      <th>over_vote</th>
-      <th>under_vote</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
-      <td>2</td>
-      <td>409</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
-      <td>3</td>
-      <td>406</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>37</td>
-      <td>12313</td>
-      <td>6</td>
-      <td>3</td>
-      <td>293</td>
-      <td>1</td>
-      <td>411</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>37</td>
-      <td>12313</td>
-      <td>6</td>
-      <td>3</td>
-      <td>293</td>
-      <td>2</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>dict</pre>
 </div>
 
 </div>
@@ -12223,21 +12050,13 @@ div#notebook {
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="analyze-dataframe">analyze dataframe<a class="anchor-link" href="#analyze-dataframe">&#182;</a></h1>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12256,16 +12075,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>contest_id           1
-pref_voter_id    23884
-serial_number       81
-tally_type_id        5
-precinct_id         45
-vote_rank            3
-candidate_id         9
-over_vote            2
-under_vote           2
-dtype: int64</pre>
+<pre>dict_keys([&#39;TabulatorId&#39;, &#39;BatchId&#39;, &#39;RecordId&#39;, &#39;CountingGroupId&#39;, &#39;ImageMask&#39;, &#39;SessionType&#39;, &#39;VotingSessionIdentifier&#39;, &#39;UniqueVotingIdentifier&#39;, &#39;Original&#39;])</pre>
 </div>
 
 </div>
@@ -12273,27 +12083,13 @@ dtype: int64</pre>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>There are 81 unique voting machines</li>
-<li>There are 23,885 voters</li>
-<li>There are 9 candidates</li>
-</ul>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># what are the candidate IDs?</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12312,7 +12108,84 @@ dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([408, 409, 406, 411, 410,   0, 405, 407,  76])</pre>
+<pre>{&#39;TabulatorId&#39;: 37,
+ &#39;BatchId&#39;: 0,
+ &#39;RecordId&#39;: 671489,
+ &#39;CountingGroupId&#39;: 3,
+ &#39;ImageMask&#39;: &#39;C:\\NAS\\Santa Fe 2018 Municipal\\Results\\Tabulator00037\\Batch000\\Images\\00037_00000_671489*.*&#39;,
+ &#39;SessionType&#39;: &#39;ScannedVote&#39;,
+ &#39;VotingSessionIdentifier&#39;: &#39;&#39;,
+ &#39;UniqueVotingIdentifier&#39;: &#39;&#39;,
+ &#39;Original&#39;: {&#39;PrecinctPortionId&#39;: 2,
+  &#39;BallotTypeId&#39;: 6,
+  &#39;IsCurrent&#39;: True,
+  &#39;Cards&#39;: [{&#39;Id&#39;: 1006,
+    &#39;PaperIndex&#39;: 0,
+    &#39;Contests&#39;: [{&#39;Id&#39;: 1,
+      &#39;Undervotes&#39;: 0,
+      &#39;Overvotes&#39;: 0,
+      &#39;OutstackConditionIds&#39;: [],
+      &#39;Marks&#39;: [{&#39;CandidateId&#39;: 4,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 1,
+        &#39;MarkDensity&#39;: 93,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: True,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 3,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 2,
+        &#39;MarkDensity&#39;: 98,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 2,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 3,
+        &#39;MarkDensity&#39;: 99,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 1,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 4,
+        &#39;MarkDensity&#39;: 99,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 5,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 5,
+        &#39;MarkDensity&#39;: 99,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []}]},
+     {&#39;Id&#39;: 3,
+      &#39;Undervotes&#39;: 0,
+      &#39;Overvotes&#39;: 0,
+      &#39;OutstackConditionIds&#39;: [],
+      &#39;Marks&#39;: [{&#39;CandidateId&#39;: 8,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 1,
+        &#39;MarkDensity&#39;: 98,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: True,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 9,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 2,
+        &#39;MarkDensity&#39;: 98,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []},
+       {&#39;CandidateId&#39;: 10,
+        &#39;PartyId&#39;: 0,
+        &#39;Rank&#39;: 3,
+        &#39;MarkDensity&#39;: 100,
+        &#39;IsAmbiguous&#39;: False,
+        &#39;IsVote&#39;: False,
+        &#39;OutstackConditionIds&#39;: []}]}],
+    &#39;OutstackConditionIds&#39;: []}]}}</pre>
 </div>
 
 </div>
@@ -12326,8 +12199,7 @@ dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># how many rows does each candidate appear in?</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12346,16 +12218,7 @@ dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0      18090
-408    14790
-405    12113
-410     7521
-407     7468
-409     5019
-406     3529
-411     2723
-76       399
-Name: candidate_id, dtype: int64</pre>
+<pre>dict_keys([&#39;PrecinctPortionId&#39;, &#39;BallotTypeId&#39;, &#39;IsCurrent&#39;, &#39;Cards&#39;])</pre>
 </div>
 
 </div>
@@ -12369,7 +12232,7 @@ Name: candidate_id, dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12386,100 +12249,78 @@ Name: candidate_id, dtype: int64</pre>
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>contest_id</th>
-      <th>pref_voter_id</th>
-      <th>serial_number</th>
-      <th>tally_type_id</th>
-      <th>precinct_id</th>
-      <th>vote_rank</th>
-      <th>candidate_id</th>
-      <th>over_vote</th>
-      <th>under_vote</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>8</th>
-      <td>37</td>
-      <td>12769</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>3</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>37</td>
-      <td>12772</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>3</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>37</td>
-      <td>12773</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>37</td>
-      <td>12773</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>37</td>
-      <td>12773</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>3</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;PrecinctPortionId&#39;: 2,
+ &#39;BallotTypeId&#39;: 6,
+ &#39;IsCurrent&#39;: True,
+ &#39;Cards&#39;: [{&#39;Id&#39;: 1006,
+   &#39;PaperIndex&#39;: 0,
+   &#39;Contests&#39;: [{&#39;Id&#39;: 1,
+     &#39;Undervotes&#39;: 0,
+     &#39;Overvotes&#39;: 0,
+     &#39;OutstackConditionIds&#39;: [],
+     &#39;Marks&#39;: [{&#39;CandidateId&#39;: 4,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 1,
+       &#39;MarkDensity&#39;: 93,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: True,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 3,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 2,
+       &#39;MarkDensity&#39;: 98,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 2,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 3,
+       &#39;MarkDensity&#39;: 99,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 1,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 4,
+       &#39;MarkDensity&#39;: 99,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 5,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 5,
+       &#39;MarkDensity&#39;: 99,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []}]},
+    {&#39;Id&#39;: 3,
+     &#39;Undervotes&#39;: 0,
+     &#39;Overvotes&#39;: 0,
+     &#39;OutstackConditionIds&#39;: [],
+     &#39;Marks&#39;: [{&#39;CandidateId&#39;: 8,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 1,
+       &#39;MarkDensity&#39;: 98,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: True,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 9,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 2,
+       &#39;MarkDensity&#39;: 98,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []},
+      {&#39;CandidateId&#39;: 10,
+       &#39;PartyId&#39;: 0,
+       &#39;Rank&#39;: 3,
+       &#39;MarkDensity&#39;: 100,
+       &#39;IsAmbiguous&#39;: False,
+       &#39;IsVote&#39;: False,
+       &#39;OutstackConditionIds&#39;: []}]}],
+   &#39;OutstackConditionIds&#39;: []}]}</pre>
 </div>
 
 </div>
@@ -12493,31 +12334,106 @@ Name: candidate_id, dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># drop rows where candidate_id==0</span>
-
-<span class="n">df_cand</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{&#39;Id&#39;: 1006,
+  &#39;PaperIndex&#39;: 0,
+  &#39;Contests&#39;: [{&#39;Id&#39;: 1,
+    &#39;Undervotes&#39;: 0,
+    &#39;Overvotes&#39;: 0,
+    &#39;OutstackConditionIds&#39;: [],
+    &#39;Marks&#39;: [{&#39;CandidateId&#39;: 4,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 1,
+      &#39;MarkDensity&#39;: 93,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: True,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 3,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 2,
+      &#39;MarkDensity&#39;: 98,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 2,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 3,
+      &#39;MarkDensity&#39;: 99,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 1,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 4,
+      &#39;MarkDensity&#39;: 99,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 5,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 5,
+      &#39;MarkDensity&#39;: 99,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []}]},
+   {&#39;Id&#39;: 3,
+    &#39;Undervotes&#39;: 0,
+    &#39;Overvotes&#39;: 0,
+    &#39;OutstackConditionIds&#39;: [],
+    &#39;Marks&#39;: [{&#39;CandidateId&#39;: 8,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 1,
+      &#39;MarkDensity&#39;: 98,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: True,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 9,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 2,
+      &#39;MarkDensity&#39;: 98,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []},
+     {&#39;CandidateId&#39;: 10,
+      &#39;PartyId&#39;: 0,
+      &#39;Rank&#39;: 3,
+      &#39;MarkDensity&#39;: 100,
+      &#39;IsAmbiguous&#39;: False,
+      &#39;IsVote&#39;: False,
+      &#39;OutstackConditionIds&#39;: []}]}],
+  &#39;OutstackConditionIds&#39;: []}]</pre>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+
 </div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="did-any-candidate-win-the-first-round?">did any candidate win the first round?<a class="anchor-link" href="#did-any-candidate-win-the-first-round?">&#182;</a></h3>
+
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># compare only the candidates with rank==1</span>
-<span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12534,100 +12450,9 @@ Name: candidate_id, dtype: int64</pre>
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>contest_id</th>
-      <th>pref_voter_id</th>
-      <th>serial_number</th>
-      <th>tally_type_id</th>
-      <th>precinct_id</th>
-      <th>vote_rank</th>
-      <th>candidate_id</th>
-      <th>over_vote</th>
-      <th>under_vote</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>37</td>
-      <td>12313</td>
-      <td>6</td>
-      <td>3</td>
-      <td>293</td>
-      <td>1</td>
-      <td>411</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>37</td>
-      <td>12769</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>37</td>
-      <td>12770</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>406</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>37</td>
-      <td>12771</td>
-      <td>7</td>
-      <td>3</td>
-      <td>152</td>
-      <td>1</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>1</pre>
 </div>
 
 </div>
@@ -12641,9 +12466,7 @@ Name: candidate_id, dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># https://jakevdp.github.io/PythonDataScienceHandbook/03.08-aggregation-and-grouping.html</span>
-<span class="c1"># https://www.geeksforgeeks.org/python-pandas-dataframe-groupby/</span>
-<span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12662,16 +12485,70 @@ Name: candidate_id, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>candidate_id
-76       67
-405    4794
-406     878
-407    2448
-408    8746
-409    1133
-410    2345
-411     526
-Name: vote_rank, dtype: int64</pre>
+<pre>[{&#39;Id&#39;: 1,
+  &#39;Undervotes&#39;: 0,
+  &#39;Overvotes&#39;: 0,
+  &#39;OutstackConditionIds&#39;: [],
+  &#39;Marks&#39;: [{&#39;CandidateId&#39;: 4,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 1,
+    &#39;MarkDensity&#39;: 93,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: True,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 3,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 2,
+    &#39;MarkDensity&#39;: 98,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 2,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 3,
+    &#39;MarkDensity&#39;: 99,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 1,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 4,
+    &#39;MarkDensity&#39;: 99,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 5,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 5,
+    &#39;MarkDensity&#39;: 99,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []}]},
+ {&#39;Id&#39;: 3,
+  &#39;Undervotes&#39;: 0,
+  &#39;Overvotes&#39;: 0,
+  &#39;OutstackConditionIds&#39;: [],
+  &#39;Marks&#39;: [{&#39;CandidateId&#39;: 8,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 1,
+    &#39;MarkDensity&#39;: 98,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: True,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 9,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 2,
+    &#39;MarkDensity&#39;: 98,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []},
+   {&#39;CandidateId&#39;: 10,
+    &#39;PartyId&#39;: 0,
+    &#39;Rank&#39;: 3,
+    &#39;MarkDensity&#39;: 100,
+    &#39;IsAmbiguous&#39;: False,
+    &#39;IsVote&#39;: False,
+    &#39;OutstackConditionIds&#39;: []}]}]</pre>
 </div>
 
 </div>
@@ -12679,25 +12556,13 @@ Name: vote_rank, dtype: int64</pre>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In RCV, if a candidate wins a majority of first-preference votes, he or she is declared the winner.</p>
-<p>Caveat: this dataframe ignores rows where no candidate preference was provided</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># majority = half the sum of first choices </span>
-<span class="n">majority_first_round</span> <span class="o">=</span> <span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span>
-<span class="n">majority_first_round</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12716,49 +12581,7 @@ Name: vote_rank, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>10468.5</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">&gt;</span><span class="n">majority_first_round</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[18]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>candidate_id
-76     False
-405    False
-406    False
-407    False
-408    False
-409    False
-410    False
-411    False
-Name: vote_rank, dtype: bool</pre>
+<pre>2</pre>
 </div>
 
 </div>
@@ -12771,17 +12594,16 @@ Name: vote_rank, dtype: bool</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since no candidate won the majority of the first round, the next step in the algorithm is to eliminate the candidate with the lowest count.</p>
-
+<h1 id="summarize-the-relevant-information">summarize the relevant information<a class="anchor-link" href="#summarize-the-relevant-information">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ballot ID:&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Id&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12794,13 +12616,135 @@ Name: vote_rank, dtype: bool</pre>
 
 <div class="output_area">
 
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>ballot ID: 1006
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;contest ID:&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Id&#39;</span><span class="p">])</span>
+<span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Marks&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>contest ID: 1
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
 <div class="prompt output_prompt">Out[19]:</div>
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>76</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CandidateId</th>
+      <th>IsAmbiguous</th>
+      <th>IsVote</th>
+      <th>MarkDensity</th>
+      <th>OutstackConditionIds</th>
+      <th>PartyId</th>
+      <th>Rank</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>False</td>
+      <td>True</td>
+      <td>93</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>False</td>
+      <td>False</td>
+      <td>98</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -12814,8 +12758,8 @@ Name: vote_rank, dtype: bool</pre>
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_second_round</span> <span class="o">=</span> <span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">76</span><span class="p">]</span>
-<span class="n">df_second_round</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;contest ID:&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Id&#39;</span><span class="p">])</span>
+<span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Marks&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12825,6 +12769,17 @@ Name: vote_rank, dtype: bool</pre>
 <div class="output_wrapper">
 <div class="output">
 
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>contest ID: 3
+</pre>
+</div>
+</div>
 
 <div class="output_area">
 
@@ -12851,77 +12806,45 @@ Name: vote_rank, dtype: bool</pre>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>contest_id</th>
-      <th>pref_voter_id</th>
-      <th>serial_number</th>
-      <th>tally_type_id</th>
-      <th>precinct_id</th>
-      <th>vote_rank</th>
-      <th>candidate_id</th>
-      <th>over_vote</th>
-      <th>under_vote</th>
+      <th>CandidateId</th>
+      <th>IsAmbiguous</th>
+      <th>IsVote</th>
+      <th>MarkDensity</th>
+      <th>OutstackConditionIds</th>
+      <th>PartyId</th>
+      <th>Rank</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
+      <td>8</td>
+      <td>False</td>
+      <td>True</td>
+      <td>98</td>
+      <td>[]</td>
+      <td>0</td>
       <td>1</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
-      <td>3</td>
-      <td>152</td>
-      <td>2</td>
-      <td>409</td>
+      <td>9</td>
+      <td>False</td>
+      <td>False</td>
+      <td>98</td>
+      <td>[]</td>
       <td>0</td>
-      <td>0</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>37</td>
-      <td>12307</td>
-      <td>2</td>
+      <td>10</td>
+      <td>False</td>
+      <td>False</td>
+      <td>100</td>
+      <td>[]</td>
+      <td>0</td>
       <td>3</td>
-      <td>152</td>
-      <td>3</td>
-      <td>406</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>37</td>
-      <td>12313</td>
-      <td>6</td>
-      <td>3</td>
-      <td>293</td>
-      <td>1</td>
-      <td>411</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>37</td>
-      <td>12313</td>
-      <td>6</td>
-      <td>3</td>
-      <td>293</td>
-      <td>2</td>
-      <td>408</td>
-      <td>0</td>
-      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -12938,14 +12861,7 @@ Name: vote_rank, dtype: bool</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then first-preference votes cast for the failed candidate are eliminated, lifting the second-preference choices indicated on those ballots.</p>
-<p>However, for my analysis I only care about the first round. Recall my objective is to categorize elections by</p>
-<ul>
-<li>Leading candidate in the first round has greater than 50% first choice votes</li>
-<li>Leading candidate in the first round has between 45-50% first choice votes</li>
-<li>Leading candidate in the first round has less than 45% of first choice votes</li>
-</ul>
-
+<h1 id="loop-over-all-ballots">loop over all ballots<a class="anchor-link" href="#loop-over-all-ballots">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -12954,10 +12870,75 @@ Name: vote_rank, dtype: bool</pre>
 <div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">number_of_first_choice_votes</span> <span class="o">=</span> <span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span><span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">reslts</span><span class="o">=</span><span class="p">{}</span>
+<span class="n">empty_ballot_count</span><span class="o">=</span><span class="p">{}</span>
+<span class="n">invalid_ballot_count</span><span class="o">=</span><span class="p">{}</span>
+<span class="n">invalid_ranking</span><span class="o">=</span><span class="p">{}</span>
+<span class="k">for</span> <span class="n">sess</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;duplicate card: &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">contest</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">[</span><span class="s1">&#39;Original&#39;</span><span class="p">][</span><span class="s1">&#39;Cards&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Contests&#39;</span><span class="p">]:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Marks&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># empty ballot -- no marks made</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">empty_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span>                
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">empty_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">empty_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;ImageMask&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;OutstackConditionIds&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]))</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># errors in ballot</span>
+                <span class="c1">#print(&#39;invalid entries in&#39;,sess[&#39;ImageMask&#39;])</span>
+                <span class="n">invalid_df</span> <span class="o">=</span> <span class="n">df</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span>                
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;ImageMask&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;more than 6 entries for&#39;</span><span class="p">,</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;ImageMask&#39;</span><span class="p">])</span>
+                <span class="n">excess_df</span> <span class="o">=</span> <span class="n">df</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span>                
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">invalid_ballot_count</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;ImageMask&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;CandidateId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1">#print(&#39;invalid number of first ranked candidates for&#39;,sess[&#39;ImageMask&#39;])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">invalid_ranking</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span>                
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">invalid_ranking</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">invalid_ranking</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">&#39;ImageMask&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># ballot exists and does not have errors</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">reslts</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span>                
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">reslts</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">reslts</span><span class="p">[</span><span class="n">contest</span><span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 148.45 seconds
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12967,8 +12948,7 @@ Name: vote_rank, dtype: bool</pre>
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outcome</span> <span class="o">=</span> <span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">&gt;</span><span class="n">number_of_first_choice_votes</span><span class="o">*</span><span class="mf">0.5</span>
-<span class="n">outcome</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">invalid_df</span>
 </pre></div>
 
 </div>
@@ -12985,18 +12965,68 @@ Name: vote_rank, dtype: bool</pre>
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>candidate_id
-76     False
-405    False
-406    False
-407    False
-408    False
-409    False
-410    False
-411    False
-Name: vote_rank, dtype: bool</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CandidateId</th>
+      <th>IsAmbiguous</th>
+      <th>IsVote</th>
+      <th>MarkDensity</th>
+      <th>OutstackConditionIds</th>
+      <th>PartyId</th>
+      <th>Rank</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>9</td>
+      <td>False</td>
+      <td>True</td>
+      <td>100</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>False</td>
+      <td>False</td>
+      <td>98</td>
+      <td>[9]</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>False</td>
+      <td>False</td>
+      <td>91</td>
+      <td>[12, 9]</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -13010,7 +13040,8 @@ Name: vote_rank, dtype: bool</pre>
 <div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outcome</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># https://spapas.github.io/2016/04/27/python-nested-list-comprehensions/</span>
+<span class="nb">set</span><span class="p">([</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">invalid_df</span><span class="p">[</span><span class="s1">&#39;OutstackConditionIds&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -13029,7 +13060,285 @@ Name: vote_rank, dtype: bool</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>False</pre>
+<pre>{9, 12}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;valid results&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">reslts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;election&#39;</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>valid results
+election 1 : 20237
+election 3 : 6217
+election 2 : 6767
+election 4 : 1410
+election 5 : 4834
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;empty votes&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">empty_ballot_count</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;election&#39;</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>empty votes
+election 4 : 530
+election 3 : 173
+election 2 : 447
+election 5 : 173
+election 1 : 40
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;invalid results&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">invalid_ballot_count</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;election&#39;</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>invalid results
+election 5 : 55
+election 1 : 356
+election 3 : 33
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;invalid results&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">invalid_ranking</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;election&#39;</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>invalid results
+election 1 : 37
+election 3 : 10
+election 2 : 3
+election 5 : 18
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">number_of_votes_cast</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">vote_df</span><span class="p">)</span> <span class="k">for</span> <span class="n">vote_df</span> <span class="ow">in</span> <span class="n">reslts</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">min</span><span class="p">(</span><span class="n">number_of_votes_cast</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[28]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">max</span><span class="p">(</span><span class="n">number_of_votes_cast</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[29]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>5</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">number_of_votes_cast</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[30]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(array([  2499.,   1875.,   1837.,    840.,  13186.,      0.]),
+ array([1, 2, 3, 4, 5, 6, 7]),
+ &lt;a list of 6 Patch objects&gt;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
 </div>
 
 </div>
@@ -13042,10 +13351,524 @@ Name: vote_rank, dtype: bool</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>My next step is to generalize the above analysis to all the elections</p>
+<h1 id="categorize-first-round-for-an-election">categorize first round for an election<a class="anchor-link" href="#categorize-first-round-for-an-election">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">reslts</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">df</span>
+</pre></div>
 
 </div>
 </div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[31]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CandidateId</th>
+      <th>IsAmbiguous</th>
+      <th>IsVote</th>
+      <th>MarkDensity</th>
+      <th>OutstackConditionIds</th>
+      <th>PartyId</th>
+      <th>Rank</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>False</td>
+      <td>True</td>
+      <td>93</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>False</td>
+      <td>False</td>
+      <td>98</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>False</td>
+      <td>False</td>
+      <td>99</td>
+      <td>[]</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;CandidateId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[32]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>4</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">which_candidate</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">vote_df</span> <span class="ow">in</span> <span class="n">reslts</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">list_of_first_rank_candidates</span> <span class="o">=</span> <span class="n">vote_df</span><span class="p">[</span><span class="n">vote_df</span><span class="p">[</span><span class="s1">&#39;Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;CandidateId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">which_candidate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of first rank candidates=&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">vote_df</span><span class="p">)</span>
+        
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 24.73 seconds
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">which_candidate</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[35]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>20237</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">which_candidate</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[36]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[4, 2, 4, 3, 2, 2, 2, 2, 3, 2]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">which_candidate</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[39]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(array([ 1212.,  7985.,  4541.,  1620.,  4879.]),
+ array([1, 2, 3, 4, 5, 6]),
+ &lt;a list of 5 Patch objects&gt;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">which_candidate</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span><span class="n">values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;counts&#39;</span><span class="p">,</span><span class="n">counts</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;total number of votes=&#39;</span><span class="p">,</span><span class="nb">sum</span><span class="p">(</span><span class="n">counts</span><span class="p">))</span>
+<span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">counts</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>values [1 2 3 4 5]
+counts [1212 7985 4541 1620 4879]
+total number of votes= 20237
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[46]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(1, 1212), (2, 7985), (3, 4541), (4, 1620), (5, 4879)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">percentages</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">]</span>
+<span class="n">percentages</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[49]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0.05989029994564412,
+ 0.39457429460888471,
+ 0.22439096704056927,
+ 0.080051391016455004,
+ 0.24109304738844689]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Objective for this notebook: separate the elections into the following categories:</p>
+<ol>
+<li>Leading candidate in the first round has greater than 50% first choice votes</li>
+<li>Leading candidate in the first round has between 45-50% first choice votes</li>
+<li>Leading candidate in the first round has less than 45% of first choice votes</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">which_cat</span><span class="p">(</span><span class="n">percentages</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Leading candidate in the first round has greater than 50</span><span class="si">% f</span><span class="s2">irst choice votes&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">max</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span><span class="o">&lt;=</span><span class="mf">0.5</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span><span class="o">&gt;=</span><span class="mf">0.45</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Leading candidate in the first round has between 45-50</span><span class="si">% f</span><span class="s2">irst choice votes&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">max</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.45</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Leading candidate in the first round has less than 45</span><span class="si">% o</span><span class="s2">f first choice votes&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;invalid outcome&quot;</span><span class="p">)</span>
+    <span class="k">return</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">which_cat</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Leading candidate in the first round has less than 45% of first choice votes
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="categorize-first-round-for-each-election">categorize first round for each election<a class="anchor-link" href="#categorize-first-round-for-each-election">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">which_candidate</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">election_id</span><span class="p">,</span><span class="n">election</span> <span class="ow">in</span> <span class="n">reslts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">vote_df</span> <span class="ow">in</span> <span class="n">election</span><span class="p">:</span>
+        <span class="n">list_of_first_rank_candidates</span> <span class="o">=</span> <span class="n">vote_df</span><span class="p">[</span><span class="n">vote_df</span><span class="p">[</span><span class="s1">&#39;Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;CandidateId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">which_candidate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of first rank candidates=&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_first_rank_candidates</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">vote_df</span><span class="p">)</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">which_candidate</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">percentages</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">]</span>
+    <span class="n">which_cat</span><span class="p">(</span><span class="n">percentages</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Leading candidate in the first round has less than 45% of first choice votes
+Leading candidate in the first round has less than 45% of first choice votes
+Leading candidate in the first round has less than 45% of first choice votes
+Leading candidate in the first round has less than 45% of first choice votes
+Leading candidate in the first round has less than 45% of first choice votes
+elapsed 47.06 seconds
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     </div>
   </div>
