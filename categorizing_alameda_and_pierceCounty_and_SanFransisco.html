@@ -11775,6 +11775,15 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>In this notebook the voting records from Alameda are</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>data source: <a href="https://www.rankedchoicevoting.org/data_clearinghouse">https://www.rankedchoicevoting.org/data_clearinghouse</a></p>
 <p>RCV definition: <a href="https://ballotpedia.org/Ranked-choice_voting_(RCV">https://ballotpedia.org/Ranked-choice_voting_(RCV</a>)</p>
 <p>Additional analysis:</p>
@@ -11808,6 +11817,9 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pandas&#39;</span><span class="p">,</span><span class="n">pandas</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
 
@@ -11848,7 +11860,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>all the data: 
 <a href="https://drive.google.com/drive/folders/1DJzIrTaDW3GSGJTkPTGAlpAMbozFG_pm">https://drive.google.com/drive/folders/1DJzIrTaDW3GSGJTkPTGAlpAMbozFG_pm</a></p>
-<p>Then download all content as a zip. Size is 1.5 GB. Of this, Sante Fe is 1.4GB</p>
+<p>download all content as a zip. Size is 1.5 GB. Of this, Sante Fe is 1.4GB</p>
 <p>I started with just "Alameda County, CA (Berkeley, Oakland, San Leandro)" which is 18MB as a .zip</p>
 <p><a href="https://drive.google.com/drive/folders/1u_airJzoLC2PMYMHcF2KYJEKxxKBi5H7">https://drive.google.com/drive/folders/1u_airJzoLC2PMYMHcF2KYJEKxxKBi5H7</a></p>
 
@@ -11861,7 +11873,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="parse-ballotimage-files">parse ballot<em>image</em> files<a class="anchor-link" href="#parse-ballotimage-files">&#182;</a></h1>
+<h1 id="get-raw-data">get raw data<a class="anchor-link" href="#get-raw-data">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -11870,8 +11882,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_*&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of election results to parse:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#list_of_ballot_files = glob.glob(&#39;voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_*&#39;)</span>
+<span class="n">list_of_ballot_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Alameda/**/ballot_image*.txt&#39;</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of election results to parse:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -11888,7 +11901,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>number of election results to parse: 17
+<pre>number of election results to parse: 48
 </pre>
 </div>
 </div>
@@ -11902,101 +11915,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[3]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 4 - Oakland_Nov 2010.txt&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sort_elections_into_bins</span><span class="p">(</span><span class="n">reslts</span><span class="p">,</span><span class="n">ballot</span><span class="p">):</span>
-    <span class="c1">#print(ballot)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">ballot</span><span class="p">,</span>
-                     <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;pref_voter_id&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;serial_number&#39;</span><span class="p">,</span><span class="s1">&#39;tally_type_id&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;precinct_id&#39;</span><span class="p">,</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;candidate_id&#39;</span><span class="p">,</span><span class="s1">&#39;over_vote&#39;</span><span class="p">,</span><span class="s1">&#39;under_vote&#39;</span><span class="p">]</span>
-    <span class="c1">#print(df.shape)</span>
-    <span class="c1">#print(df[&#39;candidate_id&#39;].unique())</span>
-    <span class="n">df_cand</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># drop rows where no candidate is specified</span>
-    <span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">=</span> <span class="n">df_cand</span><span class="p">[</span><span class="n">df_cand</span><span class="p">[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;candidate_id&#39;</span><span class="p">)[</span><span class="s1">&#39;vote_rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-    <span class="n">number_of_first_choice_votes</span> <span class="o">=</span>  <span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="c1">#print(&#39;number of first choice votes:&#39;,number_of_first_choice_votes)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">&gt;</span> <span class="n">number_of_first_choice_votes</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="c1">#print(&#39;Leading candidate in the first round has greater than 50% first choice votes&#39;)</span>
-        <span class="n">reslts</span><span class="p">[</span><span class="s1">&#39;leading candidate in first round has more than 50</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ballot</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="p">((</span><span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">&lt;=</span> <span class="n">number_of_first_choice_votes</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> 
-          <span class="p">(</span><span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">&gt;=</span> <span class="n">number_of_first_choice_votes</span><span class="o">*</span><span class="mf">0.45</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()):</span>
-        <span class="c1">#print(&#39;Leading candidate in the first round has between 45-50% first choice votes&#39;)</span>
-        <span class="n">reslts</span><span class="p">[</span><span class="s1">&#39;leading candidate in first round vote has between 50% and 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ballot</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">&lt;</span> <span class="n">number_of_first_choice_votes</span><span class="o">*</span><span class="mf">0.45</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="c1">#print(&#39;Leading candidate in the first round has less than 45% of first choice votes&#39;)</span>
-        <span class="n">reslts</span><span class="p">[</span><span class="s1">&#39;leading candidate in first round vote has less than 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ballot</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;should not reach this condition&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">reslts</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">reslts</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;leading candidate in first round has more than 50</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has between 50% and 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has less than 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[]}</span>
-
-<span class="k">for</span> <span class="n">ballot</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
-    <span class="n">reslts</span> <span class="o">=</span> <span class="n">sort_elections_into_bins</span><span class="p">(</span><span class="n">reslts</span><span class="p">,</span><span class="n">ballot</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">reslts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">election</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span><span class="n">election</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;voting_data/&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_lookup_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Alameda/**/master_lookup_*&#39;</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of ballot lookup tables:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_lookup_files</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12013,26 +11933,898 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>leading candidate in first round has more than 50% of first choice votes :
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 2 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 1 - San Leandro_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 8 - Berkeley_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 6 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 4 - Berkeley_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_City Auditor - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 5 - San Leandro_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_City Auditor - Berkeley_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ School Director, District 6 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 1 - Berkeley_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ School Director, District 4 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 2 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 3 - San Leandro_Nov 2010
-leading candidate in first round vote has between 50% and 45% of first choice votes :
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 7 - Berkeley_Nov 2010
-leading candidate in first round vote has less than 45% of first choice votes :
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 4 - Oakland_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Mayor of San Leandro_Nov 2010
-    Alameda/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Mayor of Oakland_Nov 2010
+<pre>number of ballot lookup tables: 51
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="pair-ballot-results-with-lookup-table-files">pair ballot results with lookup table files<a class="anchor-link" href="#pair-ballot-results-with-lookup-table-files">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">):</span>
+    <span class="n">list_of_ballots_and_lookups</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">this_ballot</span> <span class="ow">in</span> <span class="n">list_of_ballot_files</span><span class="p">:</span>
+        <span class="n">ballot_name</span> <span class="o">=</span> <span class="n">this_ballot</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ballot_image_&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">found_match</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">for</span> <span class="n">this_lookup</span> <span class="ow">in</span> <span class="n">list_of_lookup_files</span><span class="p">:</span>
+            <span class="n">lookup_name</span> <span class="o">=</span> <span class="n">this_lookup</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;master_lookup_&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ballot_name</span> <span class="o">==</span> <span class="n">lookup_name</span><span class="p">:</span>
+                <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="n">this_lookup</span><span class="p">))</span>
+                <span class="n">found_match</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_match</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no lookup found for&#39;</span><span class="p">,</span><span class="n">this_ballot</span><span class="p">)</span>
+            <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">list_of_ballots_and_lookups</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_ballots_and_lookups</span> <span class="o">=</span> <span class="n">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of paired files found:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD3/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD2/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD5/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD1/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD7/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyMayor/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD1/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD7/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD2/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD4/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD6/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD5/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD3/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD5/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD3/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilAtLrg/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandAttorney/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD6/ballot_image.txt
+no lookup found for voting_data/Alameda/Alameda (Oakland, San Leandro, Berkeley) 2017/BerkCouncilD4/ballot_image.txt
+number of paired files found: 48
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>convert ballot to dataframe</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">vote_table</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">):</span>
+    <span class="n">fwf</span><span class="o">=</span><span class="kc">False</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+        <span class="n">file_contents</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">==</span><span class="mi">45</span><span class="p">:</span>
+            <span class="n">fwf</span><span class="o">=</span><span class="kc">True</span>
+    
+    <span class="k">if</span> <span class="n">fwf</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">,</span>
+                         <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;pref_voter_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;serial_number&#39;</span><span class="p">,</span><span class="s1">&#39;tally_type_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;precinct_id&#39;</span><span class="p">,</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;CandidateID&#39;</span><span class="p">,</span><span class="s1">&#39;over_vote&#39;</span><span class="p">,</span><span class="s1">&#39;under_vote&#39;</span><span class="p">]</span>
+        <span class="n">df_cand</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;CandidateID&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># drop rows where no candidate is specified</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df_cand</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span><span class="c1">#,delim_whitespace=True)</span>
+
+    <span class="k">return</span> <span class="n">df_cand</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>let's see what that looks like for a ballot file</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">df_votes</span> <span class="o">=</span> <span class="n">vote_table</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df_votes</span><span class="o">.</span><span class="n">shape</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 19.11 seconds
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_votes</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>contest_id</th>
+      <th>pref_voter_id</th>
+      <th>serial_number</th>
+      <th>tally_type_id</th>
+      <th>precinct_id</th>
+      <th>Vote_Rank</th>
+      <th>CandidateID</th>
+      <th>over_vote</th>
+      <th>under_vote</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>68</td>
+      <td>30773</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>68</td>
+      <td>30773</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>2</td>
+      <td>395</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>68</td>
+      <td>30774</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>395</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>68</td>
+      <td>30775</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>68</td>
+      <td>30776</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>when possible, decorate the ballot table with candidate names</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">candidate_id_table</span><span class="p">(</span><span class="n">master_lookup</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">master_lookup</span><span class="p">,</span>
+                             <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;record_id&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;description&#39;</span><span class="p">,</span><span class="s1">&#39;list_order&#39;</span><span class="p">,</span><span class="s1">&#39;candidates_contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;is_writein&#39;</span><span class="p">,</span><span class="s1">&#39;is_provisional&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;record_id&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;Candidate&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_cand</span> <span class="o">=</span> <span class="n">candidate_id_table</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">df_cand</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>record_id</th>
+      <th>id</th>
+      <th>description</th>
+      <th>list_order</th>
+      <th>candidates_contest_id</th>
+      <th>is_writein</th>
+      <th>is_provisional</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Candidate</td>
+      <td>394</td>
+      <td>JANE BRUNNER</td>
+      <td>1</td>
+      <td>68</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Candidate</td>
+      <td>395</td>
+      <td>BARBARA PARKER</td>
+      <td>2</td>
+      <td>68</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Candidate</td>
+      <td>92</td>
+      <td>Write-In</td>
+      <td>3</td>
+      <td>68</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>join the candidate names with candidate IDs</p>
+<p>For example,</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">df_cand_reduced</span> <span class="o">=</span> <span class="n">df_cand</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;record_id&#39;</span><span class="p">,</span> <span class="s1">&#39;list_order&#39;</span><span class="p">,</span><span class="s1">&#39;candidates_contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;is_writein&#39;</span><span class="p">,</span><span class="s1">&#39;is_provisional&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cand_and_votes_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_votes</span><span class="p">,</span><span class="n">df_cand_reduced</span><span class="p">,</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span><span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;CandidateID&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+<span class="n">cand_and_votes_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 0.1 seconds
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>contest_id</th>
+      <th>pref_voter_id</th>
+      <th>serial_number</th>
+      <th>tally_type_id</th>
+      <th>precinct_id</th>
+      <th>Vote_Rank</th>
+      <th>CandidateID</th>
+      <th>over_vote</th>
+      <th>under_vote</th>
+      <th>id</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>68</td>
+      <td>30773</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+      <td>394</td>
+      <td>JANE BRUNNER</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>68</td>
+      <td>30773</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>2</td>
+      <td>395</td>
+      <td>0</td>
+      <td>0</td>
+      <td>395</td>
+      <td>BARBARA PARKER</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>68</td>
+      <td>30774</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>395</td>
+      <td>0</td>
+      <td>0</td>
+      <td>395</td>
+      <td>BARBARA PARKER</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>68</td>
+      <td>30775</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+      <td>394</td>
+      <td>JANE BRUNNER</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>68</td>
+      <td>30776</td>
+      <td>1</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>394</td>
+      <td>0</td>
+      <td>0</td>
+      <td>394</td>
+      <td>JANE BRUNNER</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following cell does all the computational work needed for the task associated with the objective for the notebook.</p>
+<p><code>df_votes[df_votes['Vote_Rank']==1]</code> down selects only the rows where vote_rank==1<BR>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.groupby('CandidateID')</code> groups the rows by candidate ID<BR>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;['Vote_Rank']</code> selects the column "vote_rank"<BR>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.count()</code> counts how many first rank votes each candidate got<BR></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">=</span> <span class="n">cand_and_votes_df</span><span class="p">[</span><span class="n">cand_and_votes_df</span><span class="p">[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">series_of_candidates_and_first_choice_count</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>description
+BARBARA PARKER    89727
+JANE BRUNNER      40356
+Write-In           1051
+Name: Vote_Rank, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">number_of_first_choice_votes</span> <span class="o">=</span>  <span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">number_of_first_choice_votes</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>131134</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>with the series describing candidates and votes, and with the scalar number of first round votes, we can now address the question of what percentage of votes the Leading candidate in the first round has</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="o">/</span><span class="n">number_of_first_choice_votes</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>description
+BARBARA PARKER    68.423902
+JANE BRUNNER      30.774627
+Write-In           0.801470
+Name: Vote_Rank, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;percentage votes for the leading candidate&#39;</span><span class="p">,</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(),</span>
+      <span class="s1">&#39;in the first round:&#39;</span><span class="p">,</span><span class="nb">max</span><span class="p">((</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="o">/</span><span class="n">number_of_first_choice_votes</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>percentage votes for the leading candidate BARBARA PARKER in the first round: 68.42390226790917
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we know what to do, encapsulate the above lines in a function</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">percentage_of_votes_for_leading_candidate_in_first_round</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">,</span><span class="n">candidate_names</span><span class="p">):</span>    
+    <span class="n">df_votes</span> <span class="o">=</span> <span class="n">vote_table</span><span class="p">(</span><span class="n">ballot_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">candidate_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df_cand</span> <span class="o">=</span> <span class="n">candidate_id_table</span><span class="p">(</span><span class="n">candidate_names</span><span class="p">)</span>
+        <span class="n">df_cand_reduced</span> <span class="o">=</span> <span class="n">df_cand</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;record_id&#39;</span><span class="p">,</span> <span class="s1">&#39;list_order&#39;</span><span class="p">,</span><span class="s1">&#39;candidates_contest_id&#39;</span><span class="p">,</span><span class="s1">&#39;is_writein&#39;</span><span class="p">,</span><span class="s1">&#39;is_provisional&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cand_and_votes_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_votes</span><span class="p">,</span><span class="n">df_cand_reduced</span><span class="p">,</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span><span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;CandidateID&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">=</span> <span class="n">cand_and_votes_df</span><span class="p">[</span><span class="n">cand_and_votes_df</span><span class="p">[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">series_of_candidates_and_first_choice_count</span> <span class="o">=</span> <span class="n">df_votes</span><span class="p">[</span><span class="n">df_votes</span><span class="p">[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;CandidateID&#39;</span><span class="p">)[</span><span class="s1">&#39;Vote_Rank&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">number_of_first_choice_votes</span> <span class="o">=</span>  <span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">number_of_first_choice_votes</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no first choice votes present in ballot file&#39;</span><span class="p">,</span><span class="n">ballot_file</span><span class="p">)</span>
+    <span class="n">reslt_dict</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;number of candidates&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="p">)</span>
+    <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;number of first choice votes&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">number_of_first_choice_votes</span>
+    <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;name or ID of top-ranked candidate&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+    <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;percentage of votes in first round for leading candidate&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">max</span><span class="p">((</span><span class="n">series_of_candidates_and_first_choice_count</span><span class="o">.</span><span class="n">values</span><span class="o">/</span><span class="n">number_of_first_choice_votes</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">reslt_dict</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>validate that the function does what we want for a single election</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">percentage_of_votes_for_leading_candidate_in_first_round</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">list_of_ballots_and_lookups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;number of candidates&#39;: 3,
+ &#39;number of first choice votes&#39;: 131134,
+ &#39;name or ID of top-ranked candidate&#39;: &#39;BARBARA PARKER&#39;,
+ &#39;percentage of votes in first round for leading candidate&#39;: 68.42390226790917}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>loop over that function and write the results to file</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">reslts_to_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">list_of_ballots_and_lookups</span><span class="p">):</span>
+    <span class="n">list_of_dicts</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ballot_and_lookup</span> <span class="ow">in</span> <span class="n">list_of_ballots_and_lookups</span><span class="p">:</span>
+        <span class="n">reslt_dict</span> <span class="o">=</span> <span class="n">percentage_of_votes_for_leading_candidate_in_first_round</span><span class="p">(</span>
+            <span class="n">ballot_and_lookup</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ballot_and_lookup</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;ballot file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ballot_and_lookup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ballot_and_lookup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;lookup_table&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ballot_and_lookup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reslt_dict</span><span class="p">[</span><span class="s1">&#39;lookup_table&#39;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;no lookup table&quot;</span>
+        <span class="n">list_of_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reslt_dict</span><span class="p">)</span>
+    <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">list_of_dicts</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;alameda_percentage.csv&#39;</span>
+<span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">reslts_to_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">list_of_ballots_and_lookups</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 125.03 seconds
 </pre>
 </div>
 </div>
@@ -12061,7 +12853,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Pierce_County/Pierce County/*&#39;</span><span class="p">)</span>
@@ -12078,7 +12870,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt output_prompt">Out[20]:</div>
 
 
 
@@ -12095,7 +12887,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span>
@@ -12111,7 +12903,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[8]:</div>
+<div class="prompt output_prompt">Out[21]:</div>
 
 
 
@@ -12135,7 +12927,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_ballot_files</span><span class="o">=</span><span class="p">[]</span>
@@ -12185,15 +12977,62 @@ voting_data/Pierce_County/Pierce County/Pierce County Executive 2008 Ballot Imag
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">reslts</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;leading candidate in first round has more than 50</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has between 50% and 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has less than 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[]}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_lookup_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/Pierce_County/Pierce County/*ookup.txt&#39;</span><span class="p">)</span>
+<span class="n">list_of_lookup_files</span>
+</pre></div>
 
-<span class="k">for</span> <span class="n">ballot</span> <span class="ow">in</span> <span class="n">list_of_ballot_files</span><span class="p">:</span>
-    <span class="n">reslts</span> <span class="o">=</span> <span class="n">sort_elections_into_bins</span><span class="p">(</span><span class="n">reslts</span><span class="p">,</span><span class="n">ballot</span><span class="p">)</span>
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[23]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;voting_data/Pierce_County/Pierce County/Pierce County Executive 2008 Master Lookup.txt&#39;,
+ &#39;voting_data/Pierce_County/Pierce County/Pierce County Council, District No. 2 2008 Master Lookup.txt&#39;,
+ &#39;voting_data/Pierce_County/Pierce County/Pierce County Assessor - Treasurer 2008 Master Lookup.txt&#39;,
+ &#39;voting_data/Pierce_County/Pierce County/Pierce County Auditor 2009 Master Lookup.txt&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">):</span>
+    <span class="n">list_of_ballots_and_lookups</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">this_ballot</span> <span class="ow">in</span> <span class="n">list_of_ballot_files</span><span class="p">:</span>
+        <span class="n">ballot_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ballot.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">this_ballot</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="c1">#print(ballot_name)</span>
+        <span class="n">found_match</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">for</span> <span class="n">this_lookup</span> <span class="ow">in</span> <span class="n">list_of_lookup_files</span><span class="p">:</span>
+            <span class="n">lookup_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;master.*&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">this_lookup</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+            <span class="c1">#print(lookup_name)</span>
+            <span class="k">if</span> <span class="n">ballot_name</span> <span class="o">==</span> <span class="n">lookup_name</span><span class="p">:</span>
+                <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="n">this_lookup</span><span class="p">))</span>
+                <span class="n">found_match</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_match</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no lookup found for&#39;</span><span class="p">,</span><span class="n">this_ballot</span><span class="p">)</span>
+            <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">list_of_ballots_and_lookups</span>
 </pre></div>
 
 </div>
@@ -12203,13 +13042,11 @@ voting_data/Pierce_County/Pierce County/Pierce County Executive 2008 Ballot Imag
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">reslts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">election</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span><span class="n">election</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;voting_data/&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_ballots_and_lookups</span> <span class="o">=</span> <span class="n">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of paired files found:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12226,13 +13063,41 @@ voting_data/Pierce_County/Pierce County/Pierce County Executive 2008 Ballot Imag
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>leading candidate in first round has more than 50% of first choice votes :
-leading candidate in first round vote has between 50% and 45% of first choice votes :
-    Pierce_County/Pierce County/Pierce County Auditor 2009 Ballot Image
-    Pierce_County/Pierce County/Pierce County Council, District No. 2 2008 Ballot Image
-leading candidate in first round vote has less than 45% of first choice votes :
-    Pierce_County/Pierce County/Pierce County Assessor - Treasurer 2008 Ballot Image
-    Pierce_County/Pierce County/Pierce County Executive 2008 Ballot Image Data
+<pre>number of paired files found: 4
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;pierceCounty_percentage.csv&#39;</span>
+<span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">reslts_to_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">list_of_ballots_and_lookups</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 75.99 seconds
 </pre>
 </div>
 </div>
@@ -12251,7 +13116,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;voting_data/San_Fransisco/San Francisco/**/*&#39;</span><span class="p">)</span>
@@ -12268,7 +13133,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[13]:</div>
+<div class="prompt output_prompt">Out[27]:</div>
 
 
 
@@ -12285,137 +13150,7 @@ leading candidate in first round vote has less than 45% of first choice votes :
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_file_extentions</span><span class="o">=</span><span class="p">[]</span>
-<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
-    <span class="c1">#print(filename.split(&#39;.&#39;)[-1])</span>
-    <span class="n">list_of_file_extentions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">list_of_file_extentions</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;txt&#39;, &#39;pdf&#39;}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">):</span>
-<span class="c1">#        print(filename)</span>
-        <span class="k">if</span> <span class="s1">&#39;ballot&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
-                <span class="n">file_contents</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">file_contents</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">file_contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>BallotImage-D10.txt
-[&#39;000000600001706700000040020000274001000014900\n&#39;, &#39;000000600001706700000040020000274002000015700\n&#39;]
-45
-BallotImage-D2.txt
-[&#39;000000700001712400000090020000331001000012600\n&#39;, &#39;000000700001712400000090020000331002000000001\n&#39;]
-45
-BallotImageListing.txt
-[&#39;\x1bE\x1b&amp;l2a0o7c067F\x1b(s0p16.66h3b6T\x1b&amp;a00L\n&#39;, &#39;BALLOT IMAGE LISTING                               SAN FRANCISCO                                      OFFICIAL RESULTS\n&#39;]
-36
-BallotImageSummary.txt
-[&#39;\x1bE\x1b&amp;l2a0o7c067F\x1b(s0p16.66h3b6T\x1b&amp;a00L\n&#39;, &#39;BALLOT IMAGE ELECTION SUMMARY\n&#39;]
-36
-20151119_ballotimage.txt
-[&#39;000000100002610500000010020000012001000003600\n&#39;, &#39;000000100002610500000010020000012002000003700\n&#39;]
-45
-D10_BallotImage.txt
-[&#39;000003300000385300000010020000054001000012900\n&#39;, &#39;000003300000385300000010020000054002000012800\n&#39;]
-45
-Sheriff-BallotImage.txt
-[&#39;000000200004728200000010020000003001000002800\n&#39;, &#39;000000200004728200000010020000003002000002800\n&#39;]
-45
-DA-BallotImage.txt
-[&#39;000000100004728200000010020000003001000002300\n&#39;, &#39;000000100004728200000010020000003002000002300\n&#39;]
-45
-Nov2004_BallotImage.txt
-[&#39;pct,1,2,3\n&#39;, &#39;0001,,,\n&#39;]
-9
-BallotImage-D8.txt
-[&#39;000001000001706800000040020000513001000014400\n&#39;, &#39;000001000001706800000040020000513002000014200\n&#39;]
-45
-Mayor-BallotImage.txt
-[&#39;000000300004728200000010020000003001000003700\n&#39;, &#39;000000300004728200000010020000003002000003700\n&#39;]
-45
-D7-BallotImage.txt
-[&#39;000002300000759400000010020000244001000011500\n&#39;, &#39;000002300000759400000010020000244002000011800\n&#39;]
-45
-BallotImage-D6.txt
-[&#39;000000900001707600000130020000457001000013600\n&#39;, &#39;000000900001707600000130020000457002000012800\n&#39;]
-45
-20161206_ballotimage.txt
-[&#39;000000900000660300000010020000406001000012800\n&#39;, &#39;000000900000660300000010020000406002000000001\n&#39;]
-45
-20180621_ballotimage.txt
-[&#39;000002000001288600000010020000009001000018100\n&#39;, &#39;000002000001288600000010020000009002000018500\n&#39;]
-45
-D5-BallotImage.txt
-[&#39;000002200000739700000010020000161001000011400\n&#39;, &#39;000002200000739700000010020000161002000010800\n&#39;]
-45
-CityWide_Ballot_Image.txt
-[&#39;000000300000835700000030020000066001000007600\n&#39;, &#39;000000300000835700000030020000066002000007700\n&#39;]
-45
-BallotImage_San Fran_Mayor_Nov 2007.txt
-[&#39;0001\n&#39;, &#39;0002\n&#39;]
-4
-BallotDescription_San Fran_2007.txt
-[&#39;  15     BALLOTS CAST - TOTAL                                                     \n&#39;, &#39;  20     BALLOTS CAST - TOTAL CARD 1                                              \n&#39;]
-27
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_ballot_files</span><span class="o">=</span><span class="p">[]</span>
@@ -12424,9 +13159,10 @@ BallotDescription_San Fran_2007.txt
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
             <span class="n">file_contents</span> <span class="o">=</span> <span class="n">fil</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">==</span><span class="mi">45</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="c1">#print(filename)</span>
             <span class="n">list_of_ballot_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">file_contents</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1">#print(file_contents[1])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of ballot files:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12443,48 +13179,7 @@ BallotDescription_San Fran_2007.txt
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>voting_data/San_Fransisco/San Francisco/San Fran_Nov 2010_District 10 Supervisors/BallotImage-D10.txt
-000000600001706700000040020000274002000015700
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2010_District 2 Supervisors/BallotImage-D2.txt
-000000700001712400000090020000331002000000001
-
-voting_data/San_Fransisco/San Francisco/2015 All offices/20151119_ballotimage.txt
-000000100002610500000010020000012002000003700
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2014_District 10 Supervisors/D10_BallotImage.txt
-000003300000385300000010020000054002000012800
-
-voting_data/San_Fransisco/San Francisco/San Fran Nov 2011 Sheriff/Sheriff-BallotImage.txt
-000000200004728200000010020000003002000002800
-
-voting_data/San_Fransisco/San Francisco/San Fran Nov 2011 District Attorney/DA-BallotImage.txt
-000000100004728200000010020000003002000002300
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2010_District 8 Supervisors/BallotImage-D8.txt
-000001000001706800000040020000513002000014200
-
-voting_data/San_Fransisco/San Francisco/San Fran Nov 2011 Mayor/Mayor-BallotImage.txt
-000000300004728200000010020000003002000003700
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2012_District 7 Supervisors/D7-BallotImage.txt
-000002300000759400000010020000244002000011800
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2010_District 6 Supervisors/BallotImage-D6.txt
-000000900001707600000130020000457002000012800
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt
-000000900000660300000010020000406002000000001
-
-voting_data/San_Fransisco/San Francisco/San Fran June 2018/20180621_ballotimage.txt
-000002000001288600000010020000009002000018500
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2012_District 5 Supervisors/D5-BallotImage.txt
-000002200000739700000010020000161002000010800
-
-voting_data/San_Fransisco/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt
-000000300000835700000030020000066002000007700
-
+<pre>number of ballot files: 14
 </pre>
 </div>
 </div>
@@ -12495,31 +13190,16 @@ voting_data/San_Fransisco/San Francisco/San Fran_Nov 2008_All District races/Cit
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">reslts</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;leading candidate in first round has more than 50</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has between 50% and 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[],</span>
-        <span class="s1">&#39;leading candidate in first round vote has less than 45</span><span class="si">% o</span><span class="s1">f first choice votes&#39;</span><span class="p">:[]}</span>
-
-<span class="k">for</span> <span class="n">ballot</span> <span class="ow">in</span> <span class="n">list_of_ballot_files</span><span class="p">:</span>
-    <span class="n">reslts</span> <span class="o">=</span> <span class="n">sort_elections_into_bins</span><span class="p">(</span><span class="n">reslts</span><span class="p">,</span><span class="n">ballot</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">reslts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">election</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span><span class="n">election</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;voting_data/&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_lookup_files</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">):</span>
+<span class="c1">#        print(filename)</span>
+        <span class="k">if</span> <span class="s1">&#39;master&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="n">list_of_lookup_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of lookup files:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_lookup_files</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12536,23 +13216,101 @@ voting_data/San_Fransisco/San Francisco/San Fran_Nov 2008_All District races/Cit
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>leading candidate in first round has more than 50% of first choice votes :
-leading candidate in first round vote has between 50% and 45% of first choice votes :
-    San_Fransisco/San Francisco/San Fran_Nov 2014_District 10 Supervisors/D10_BallotImage
-leading candidate in first round vote has less than 45% of first choice votes :
-    San_Fransisco/San Francisco/San Fran_Nov 2010_District 10 Supervisors/BallotImage-D10
-    San_Fransisco/San Francisco/San Fran_Nov 2010_District 2 Supervisors/BallotImage-D2
-    San_Fransisco/San Francisco/2015 All offices/20151119_ballotimage
-    San_Fransisco/San Francisco/San Fran Nov 2011 Sheriff/Sheriff-BallotImage
-    San_Fransisco/San Francisco/San Fran Nov 2011 District Attorney/DA-BallotImage
-    San_Fransisco/San Francisco/San Fran_Nov 2010_District 8 Supervisors/BallotImage-D8
-    San_Fransisco/San Francisco/San Fran Nov 2011 Mayor/Mayor-BallotImage
-    San_Fransisco/San Francisco/San Fran_Nov 2012_District 7 Supervisors/D7-BallotImage
-    San_Fransisco/San Francisco/San Fran_Nov 2010_District 6 Supervisors/BallotImage-D6
-    San_Fransisco/San Francisco/San Fran_Nov 2016/20161206_ballotimage
-    San_Fransisco/San Francisco/San Fran June 2018/20180621_ballotimage
-    San_Fransisco/San Francisco/San Fran_Nov 2012_District 5 Supervisors/D5-BallotImage
-    San_Fransisco/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image
+<pre>number of lookup files: 14
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">):</span>
+    <span class="n">list_of_ballots_and_lookups</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">this_ballot</span> <span class="ow">in</span> <span class="n">list_of_ballot_files</span><span class="p">:</span>
+        <span class="n">ballot_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ballot.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">this_ballot</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]),</span><span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="c1">#print(&#39;BALLOT NAME:&#39;,ballot_name)</span>
+        <span class="n">found_match</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">for</span> <span class="n">this_lookup</span> <span class="ow">in</span> <span class="n">list_of_lookup_files</span><span class="p">:</span>
+            <span class="n">lookup_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;master.*&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">this_lookup</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]),</span><span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+            <span class="c1">#print(&#39;LOOKUP NAME:&#39;,lookup_name)</span>
+            <span class="k">if</span> <span class="n">ballot_name</span> <span class="o">==</span> <span class="n">lookup_name</span><span class="p">:</span>
+                <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="n">this_lookup</span><span class="p">))</span>
+                <span class="n">found_match</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_match</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no lookup found for&#39;</span><span class="p">,</span><span class="n">this_ballot</span><span class="p">)</span>
+            <span class="n">list_of_ballots_and_lookups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_ballot</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">list_of_ballots_and_lookups</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_ballots_and_lookups</span> <span class="o">=</span> <span class="n">create_ballot_lookup_tuples</span><span class="p">(</span><span class="n">list_of_ballot_files</span><span class="p">,</span><span class="n">list_of_lookup_files</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of paired files found:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_ballots_and_lookups</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>number of paired files found: 14
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;sanFrancisco_percentage.csv&#39;</span>
+<span class="n">start_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">reslts_to_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">list_of_ballots_and_lookups</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;elapsed&#39;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>elapsed 230.26 seconds
 </pre>
 </div>
 </div>
